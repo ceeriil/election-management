@@ -1,0 +1,39 @@
+<a href="/pollingAgent/option" class="btn btn-info" style="margin-top: 5px"
+  >Back</a
+>
+<h4>All Polling Units</h4>
+<div class="tableDiv">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Name</th>
+        <th scope="col">State</th>
+        <th scope="col">Total Votes</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% pollingUnits.forEach(element => { %>
+      <tr class="head">
+        <td><%= element.id%></td>
+        <td><%= element.name %></td>
+        <td><%= element.state %></td>
+        <td><%= element.totalVotes %></td>
+        <td>
+          <a href="/pollingAgent/edit/<%= element._id %> "
+            ><img
+              style="margin: 0px 5px"
+              src="https://img.icons8.com/material-outlined/30/000000/edit.png"
+          /></a>
+          <a href="/pollingAgent/delete/<%= element._id %> "
+            ><img
+              style="margin: 0px 5px"
+              src="https://img.icons8.com/ios-glyphs/30/000000/filled-trash.png"
+          /></a>
+        </td>
+      </tr>
+      <%}) %>
+    </tbody>
+  </table>
+</div>

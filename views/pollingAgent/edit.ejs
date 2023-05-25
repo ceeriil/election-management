@@ -1,0 +1,43 @@
+<a href="/pollingAgent/viewall" class="btn btn-info" style="margin-top: 5px"
+  >Back</a
+>
+<h4>Editing Form for Polling Unit :<%= pollingUnit.name %></h4>
+<form method="POST" class="addStu" autocomplete="off">
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Name : </label>
+    <input
+      type="text"
+      name="name"
+      required
+      class="form-control"
+      value="<%= pollingUnit.name  %> "
+      id="exampleInputEmail1"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Id No. : </label>
+    <input
+      type="number"
+      name="id"
+      value="<%= pollingUnit.id  %> "
+      required
+      class="form-control"
+      id="exampleInputEmail1"
+    />
+  </div>
+
+ 
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">totalVotes : </label>
+    <input
+      type="number"
+      name="score"
+      value="<%= pollingUnit.totalVotes  %> "
+      required
+      class="form-control"
+      id="exampleInputEmail1"
+    />
+  </div>
+  <button type="submit" class="btn btn-success">Update</button>
+</form>

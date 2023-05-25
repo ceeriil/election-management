@@ -1,0 +1,54 @@
+<a href="/pollingAgent/option" class="btn btn-info" style="margin-top: 5px"
+  >Back</a
+>
+<h4>Add Result of Polling Unit</h4>
+<form method="POST" class="addPU" autocomplete="off">
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">ID : </label>
+    <input
+      type="number"
+      name="id"
+      required
+      class="form-control"
+      id="exampleInputEmail1"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Name : </label>
+    <input
+      type="text"
+      name="name"
+      required
+      class="form-control"
+      id="exampleInputEmail1"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">State : </label>
+    <input
+      type="text"
+      name="state"
+      required
+      class="form-control"
+      id="exampleInputEmail1"
+    />
+  </div>
+
+  <!-- 
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Date of Birth : </label>
+        <input type="date" name="dob" class="form-control" id="exampleInputEmail1">
+      </div> -->
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Total Votes : </label>
+    <input
+      type="number"
+      name="totalVotes"
+      required
+      class="form-control"
+      id="exampleInputEmail1"
+    />
+  </div>
+  <button type="submit" class="btn btn-success">Add</button>
+  <a href="/pollingAgent/viewall" class="btn btn-primary">View All</a>
+</form>
