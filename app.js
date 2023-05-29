@@ -1,18 +1,17 @@
+require("dotenv").config();
 const express = require("express");
-//express app
+
 const app = express();
 
-const port = 3000;
-const mongoose = require("mongoose"); //to connect to mongodb
+const PORT = process.env.PORT || 3000;
+const mongoose = require("mongoose");
+const connectionOptions = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+};
 
 //connect to mongodb and listen to requests
-mongoose.connect(
-  "mongodb+srv://ceeriil:sd2o1TuvTg6d5DXh@cluster0.3y3rufd.mongodb.net/?retryWrites=true&w=majority",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-);
+mongoose.connect(process.env.DATABASE, connectionOptions);
 const db = mongoose.connection;
 db.on("error", (error) => console.log(error));
 db.once("open", () => console.log("connected"));
@@ -40,8 +39,8 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`Example app listening at http://localhost:${PORT}`);
 });
 
 // 404 page
