@@ -1,19 +1,73 @@
-// Importing the PollingUnit model
+const jwt = require("jsonwebtoken");
+const PollingAgent = require("../models/pollingAgent");
 const PollingUnit = require("../models/pollingUnit");
 
 const pollingAgent_login_get = (req, res) => {
   res.render("pollingAgent/pollingAgentLogin");
 };
 
-const pollingAgent_login_post = (req, res) => {
-  // ******** Polling Agent Login Password **********
-  if (req.body.password == "pswd") {
-    res.redirect("/pollingAgent/option");
-  } else {
-    res.render("pollingAgent/pollingAgentLogin", {
-      error: "Please Enter Correct Password",
+/* const pollingAgent_login_get = async (req, res, next) => {
+  try {
+    const agents = await pollingAgent.find();
+    res.render("pollingAgent/pollingAgentLogin");
+    return res.status(200).json(agents);
+  } catch (err) {
+    return next({
+      status: 400,
+      message: err.message,
     });
   }
+}; */
+
+const pollingAgent_login_post = async (req, res) => {
+  /*  try {
+    const agent = await db.Agent.find({
+      username: req.body.username,
+    });
+    const { id, username } = agent;
+    const valid = await agent.comparePassword(req.body.password);
+
+    if (valid) {
+      const token = jwt.sign({ id, username }, process.env.SECRET);
+      res.redirect("/pollingAgent/option");
+      return res.status(200).json({
+        id,
+        username,
+        token,
+      });
+    } else {
+      throw new Error();
+    }
+  } catch (err) {
+    return next({ status: 400, message: "Invalid Username/Password" });
+  } */
+
+  const pollingAgent = await PollingAgent.findOne({
+    username: req.body.username,
+  });
+
+  if (!pollingAgent) {
+    res.render("pollingAgent/pollingAgentLogin", {
+      error: "Invalid username and password",
+    });
+    return;
+  }
+
+  const { id, username } = pollingAgent;
+  const valid = await pollingAgent.comparePassword(req.body.password);
+  if (valid) {
+    const token = jwt.sign({ id, username }, process.env.SECRET);
+    res.redirect("/pollingAgent/option");
+    /* res.status(200).json({
+      username,
+      token,
+    }); */
+    return;
+  }
+  res.render("pollingAgent/pollingAgentLogin", {
+    error: "Invalid username and password",
+  });
+  return;
 };
 
 const pollingAgent_viewAll_get = async (req, res) => {
