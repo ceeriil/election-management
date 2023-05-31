@@ -1,9 +1,10 @@
 # Result-Management-Application
 
 An Election Management System using HTML, CSS, JavaScript , Node and using MVC Model.<br/>
-• Two types of users can login to application by clicking a button on homepage.<br/>
-• Users can enter their details and date of birth to view all result.<br/>
+• Polling agents can log in to the system using their credentials to access certain features<br/>
 • Polling Agents can View all records, add new record, edit and delete the records.<br/>
+• The application tracks votes for multiple political parties in each polling unit<br/>
+• Visitors can search for election results by entering the ID of a specific polling unit. The application retrieves and displays the results, including the total votes cast and the individual party-wise votes for that particular polling unit.<br/>
 
 # Setup Guide
 
