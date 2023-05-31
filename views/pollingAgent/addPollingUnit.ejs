@@ -1,12 +1,13 @@
 <a href="/pollingAgent/option" class="btn btn-info" style="margin-top: 5px"
   >Back</a
 >
+
 <h4>Add Result of Polling Unit</h4>
 <form method="POST" class="addPU" autocomplete="off">
   <div class="mb-3">
     <label for="exampleInputEmail1" class="form-label">ID : </label>
     <input
-      type="number"
+      type="string"
       name="id"
       required
       class="form-control"
@@ -34,11 +35,32 @@
     />
   </div>
 
-  <!-- 
-      <div class="mb-3">
-        <label for="exampleInputEmail1" class="form-label">Date of Birth : </label>
-        <input type="date" name="dob" class="form-control" id="exampleInputEmail1">
-      </div> -->
+  <div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Party</th>
+          <th>Votes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (const party of parties) { %>
+        <tr>
+          <td><%= party.name %></td>
+          <td>
+            <input
+              type="number"
+              name="<%= party.name %>"
+              required
+              class="form-control"
+            />
+          </td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+
   <div class="mb-3">
     <label for="exampleInputEmail1" class="form-label">Total Votes : </label>
     <input

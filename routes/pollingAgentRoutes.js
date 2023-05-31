@@ -1,9 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const pollingAgentController = require("../controllers/pollingAgentController");
+const auth = require("../middlewares/auth");
 
 router.get("/login", pollingAgentController.pollingAgent_login_get);
 router.post("/login", pollingAgentController.pollingAgent_login_post);
+
 router.get("/viewall", pollingAgentController.pollingAgent_viewAll_get);
 router.get("/edit/:id", pollingAgentController.pollingAgent_edit_get);
 router.post("/edit/:id", pollingAgentController.pollingAgent_edit_post);

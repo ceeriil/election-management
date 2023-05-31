@@ -6,42 +6,7 @@ const pollingAgent_login_get = (req, res) => {
   res.render("pollingAgent/pollingAgentLogin");
 };
 
-/* const pollingAgent_login_get = async (req, res, next) => {
-  try {
-    const agents = await pollingAgent.find();
-    res.render("pollingAgent/pollingAgentLogin");
-    return res.status(200).json(agents);
-  } catch (err) {
-    return next({
-      status: 400,
-      message: err.message,
-    });
-  }
-}; */
-
 const pollingAgent_login_post = async (req, res) => {
-  /*  try {
-    const agent = await db.Agent.find({
-      username: req.body.username,
-    });
-    const { id, username } = agent;
-    const valid = await agent.comparePassword(req.body.password);
-
-    if (valid) {
-      const token = jwt.sign({ id, username }, process.env.SECRET);
-      res.redirect("/pollingAgent/option");
-      return res.status(200).json({
-        id,
-        username,
-        token,
-      });
-    } else {
-      throw new Error();
-    }
-  } catch (err) {
-    return next({ status: 400, message: "Invalid Username/Password" });
-  } */
-
   const pollingAgent = await PollingAgent.findOne({
     username: req.body.username,
   });
@@ -58,10 +23,6 @@ const pollingAgent_login_post = async (req, res) => {
   if (valid) {
     const token = jwt.sign({ id, username }, process.env.SECRET);
     res.redirect("/pollingAgent/option");
-    /* res.status(200).json({
-      username,
-      token,
-    }); */
     return;
   }
   res.render("pollingAgent/pollingAgentLogin", {
@@ -95,17 +56,37 @@ const pollingAgent_option_get = (req, res) => {
 };
 
 const pollingAgent_add_get = (req, res) => {
-  res.render("pollingAgent/addPollingUnit");
+  const parties = [
+    { name: "APC" },
+    { name: "PDP" },
+    { name: "LP" },
+    { name: "APGA" },
+    { name: "ADC" },
+  ];
+
+  res.render("pollingAgent/addPollingUnit", { parties: parties });
 };
 
 const pollingAgent_add_post = async (req, res) => {
-  const { id, name, state, totalVotes } = req.body;
+  const { id, name, state, localGovernmentArea, totalVotes, ...parties } =
+    req.body;
+  console.log("Input values:", parties);
   const newPollingUnit = new PollingUnit({
     id: id,
     name: name,
     state: state,
     totalVotes: totalVotes,
+    localGovernmentArea: localGovernmentArea,
+    parties: {
+      APC: Number(parties.APC),
+      PDP: Number(parties.PDP),
+      LP: Number(parties.LP),
+      APGA: Number(parties.APGA),
+      ADC: Number(parties.ADC),
+    },
   });
+
+  console.log("Polling Unit object:", newPollingUnit);
 
   try {
     await newPollingUnit.save();

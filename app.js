@@ -14,7 +14,9 @@ const connectionOptions = {
 mongoose.connect(process.env.DATABASE, connectionOptions);
 const db = mongoose.connection;
 db.on("error", (error) => console.log(error));
-db.once("open", () => console.log("connected"));
+db.once("open", () => {
+  console.log("Connected to the database");
+});
 
 //register view engine
 app.set("view engine", "ejs");
