@@ -1,8 +1,67 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;800&family=Poppins:wght@400;600&display=swap");
+
 body {
   margin-left: 10px;
+  font-family: "Poppins", sans-serif;
+  background: #000;
+  color: #818486;
+  line-height: 1.5;
 }
+
+a {
+  color: inherit;
+}
+
+.hero-text {
+  font-size: calc(3vw + 12px);
+  background: linear-gradient(45deg, #f35e84, #503efe, #9af9cf);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  font-family: "Montserrat", sans-serif;
+}
+
+.hero-description {
+  font-size: 1.2rem;
+  max-width: 80%;
+}
+
+.hero-section .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.card {
+  padding: 1rem 2rem 2rem;
+  border-radius: 0.5rem;
+  border: 1px solid #503efe;
+  background-color: #ffffff20;
+  margin: 0rem 1rem;
+}
+
+.card h3 {
+  color: #fff;
+}
+.card p {
+  font-size: 0.9rem;
+}
+
+.btn-primary {
+  background-color: #1449ff;
+  color: #fff;
+  border-radius: 0.5rem;
+  border: none;
+  padding: 0.8rem 1.5rem;
+}
+
+.btn-info {
+  background-color: #1449ff;
+  border: none;
+}
+
 .navbar {
-  background-color: rgb(145, 219, 176);
   margin-left: -10px;
 }
 .navbar-brand {
@@ -30,6 +89,14 @@ body {
 .optionDiv button {
   margin: 0px 100px;
 }
+
+.title {
+  font-size: 1.6rem;
+  color: #fff;
+  font-weight: 800;
+  font-family: "Montserrat", sans-serif;
+}
+
 .agentLog {
   height: 50vh;
   width: 100vw;
@@ -40,11 +107,23 @@ body {
 .agentForm {
   padding: 60px 40px;
   border-radius: 10px;
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  border: 1px solid #503efe;
+  border-radius: 1rem;
+  margin-top: 2rem;
 }
 .agentForm input {
   width: 300px;
+  border: none;
+  border-bottom: 1px solid #fff;
+  background: #000 !important;
+  color: #fff !important;
+  border-radius: none;
 }
+
+.agentForm label {
+  color: #fff;
+}
+
 .tableDiv {
   margin: 10px 200px;
   padding: 60px 40px;
@@ -86,4 +165,9 @@ h3 {
   color: red;
   margin-top: 20px;
   margin-left: 10px;
+}
+
+.action {
+  -webkit-filter: invert(100%);
+  filter: invert(100%);
 }
