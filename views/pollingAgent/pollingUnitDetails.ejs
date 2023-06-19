@@ -1,31 +1,61 @@
 <style>
   .vote_image {
     width: 30%;
+    cursor: pointer;
   }
 </style>
 <section>
-  <a
-    href="/pollingAgent/viewall"
-    class="btn"
-    style="margin-top: 5px; color: #503efe"
-    >Back</a
-  >
+  <a href="/pollingAgent/viewall" class="btn" style="margin-top: 5px; color: #503efe">Back</a>
 
-  <h4 class="hero-text mb-2">Polling Unit Details</h4>
+  <h4 class="hero-text mb-2">Polling Unit Results</h4>
 
-  <div class="card mt-5 mx-auto container">
-    <p><strong>ID:</strong> <%= pollingUnit.id %></p>
-    <p><strong>Name:</strong> <%= pollingUnit.name %></p>
-    <p><strong>State:</strong> <%= pollingUnit.state %></p>
-    <p><strong>Total Votes:</strong> <%= pollingUnit.totalVotes %></p>
-    <img class="vote_image" src= <%= pollingUnit.voteImage %> alt="">
-    <p><strong>Party Details:</strong></p>
-    <ul>
-      <% for (const [party, votes] of Object.entries(pollingUnit.parties)) { %>
-      <li><%= party %>: <%= votes %></li>
-      <% } %>
-    </ul>
-
-    <p><strong>Winner:</strong> <%= winner %></p>
+  <div class="mt-5 mx-auto container">
+  
+    
+    <table class="table details-table">
+      <tbody>
+        <tr>
+          <td class="thead"><strong>ID:</strong></td>
+          <td><%= pollingUnit.id %></td>
+        </tr>
+        <tr>
+          <td class="thead"><strong>Name:</strong></td>
+          <td><%= pollingUnit.name %></td>
+        </tr>
+        <tr>
+          <td class="thead"><strong>State:</strong></td>
+          <td><%= pollingUnit.state %></td>
+        </tr>
+        <tr>
+          <td class="thead"><strong>Total Votes:</strong></td>
+          <td><%= pollingUnit.totalVotes %></td>
+        </tr>
+        <tr>
+          <td class="thead"><strong>Party Details:</strong></td>
+          <td>
+            <table class="table-inner">
+              <% for (const [party, votes] of Object.entries(pollingUnit.parties)) { %>
+              <tr>
+                <td><%= party %></td>
+                <td><%= votes %></td>
+              </tr>
+              <% } %>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td class="thead"><strong>Winner:</strong></td>
+          <td class="winner-text"><%= winner %></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <a href='<%= pollingUnit.voteImage %>' target="_blank" class="btn btn-primary ">
+              <img src='<%= pollingUnit.voteImage %>' alt="" class="vote_image">
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </section>
