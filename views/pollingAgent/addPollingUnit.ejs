@@ -2,7 +2,7 @@
   >Back</a
 >
 
-<h4>Add Result of Polling Unit</h4>
+<h4 class="hero-text mb-2">Add Result of Polling Unit</h4>
 <form method="POST" class="addPU" autocomplete="off">
   <div class="mb-3">
     <label for="exampleInputEmail1" class="form-label">ID : </label>
@@ -90,10 +90,13 @@
       }
     });
 
-    const sum = inputValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    const sum = inputValues.reduce(
+      (accumulator, currentValue) => accumulator + currentValue,
+      0
+    );
 
-    console.log('Sum:', sum);
+    console.log("Sum:", sum);
 
-    document.getElementById('totalVotes').value = sum
+    document.getElementById("totalVotes").value = sum;
   }
 </script>

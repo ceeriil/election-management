@@ -31,6 +31,7 @@
       integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
       crossorigin="anonymous"
     ></script>
+
     <script
       src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
       integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
@@ -38,5 +39,22 @@
     ></script>
 
     <%- include("../partials/navbar.ejs") %> <%- body %>
+
+    <canvas class="background"></canvas>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particlesjs/2.2.2/particles.min.js
+    "></script>
+    <script>
+      window.onload = function () {
+        Particles.init({
+          selector: ".background",
+          maxParticles: 200,
+          speed: 0.5,
+          color: "#2D6880",
+          minDistance: 120,
+          connectParticles: true,
+        });
+      };
+    </script>
   </body>
 </html>
