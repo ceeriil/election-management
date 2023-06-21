@@ -46,7 +46,7 @@ exports.Error = require('./error/index');
 /**
  * The Mongoose [Schema](#schema_Schema) constructor
  *
- * ####Example:
+ * #### Example:
  *
  *     const mongoose = require('mongoose');
  *     const Schema = mongoose.Schema;
@@ -61,18 +61,18 @@ exports.Schema = require('./schema');
 /**
  * The various Mongoose Types.
  *
- * ####Example:
+ * #### Example:
  *
  *     const mongoose = require('mongoose');
  *     const array = mongoose.Types.Array;
  *
- * ####Types:
+ * #### Types:
  *
  * - [Array](/docs/schematypes.html#arrays)
  * - [Buffer](/docs/schematypes.html#buffers)
  * - [Embedded](/docs/schematypes.html#schemas)
  * - [DocumentArray](/docs/api/documentarraypath.html)
- * - [Decimal128](/docs/api.html#mongoose_Mongoose-Decimal128)
+ * - [Decimal128](/docs/api/mongoose.html#mongoose_Mongoose-Decimal128)
  * - [ObjectId](/docs/schematypes.html#objectids)
  * - [Map](/docs/schematypes.html#maps)
  * - [Subdocument](/docs/schematypes.html#schemas)
@@ -98,12 +98,12 @@ exports.VirtualType = require('./virtualtype');
 /**
  * The various Mongoose SchemaTypes.
  *
- * ####Note:
+ * #### Note:
  *
  * _Alias of mongoose.Schema.Types for backwards compatibility._
  *
  * @property SchemaTypes
- * @see Schema.SchemaTypes #schema_Schema.Types
+ * @see Schema.SchemaTypes #schema_Schema-Types
  * @api public
  */
 

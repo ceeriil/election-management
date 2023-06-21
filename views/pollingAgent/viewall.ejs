@@ -47,7 +47,13 @@
   #pollingUnitTotalVotes {
     font-size: 12px;
   }
+
+  /* #pollingUnitImage {
+    width: 30%;
+  } */
 </style>
+
+<img src="../../img/css4.PNG" alt="" />
 
 <div id="myModal" class="modal">
   <!-- Modal content -->
@@ -60,6 +66,16 @@
         <h1 id="pollingUnitName">Name:</h1>
         <h1 id="pollingUnitState">State:</h1>
         <h1 id="pollingUnitTotalVotes">Total Votes:</h1>
+        <h1 id="pollingUnitName">Name:</h1>
+        <h1 id="pollingUnitState">State:</h1>
+        <h1 id="pollingUnitTotalVotes">Total Votes:</h1>
+        <img
+          id="pollingUnitImage"
+          src="/uploads/voteImage-1688755726677-516552805.PNG"
+          alt=""
+          width="200px"
+          height="200px"
+        />
       </div>
 
       <div class="parties">
@@ -105,3 +121,39 @@
     </tbody>
   </table>
 </div>
+
+<script>
+  // JavaScript functions to open and close the modal
+  function openModal(id) {
+    const pollingUnitsData = JSON.parse("<%- JSON.stringify(pollingUnits) %>");
+    const selectedUnit = pollingUnitsData.find((unit) => unit.id === id);
+    console.log(selectedUnit);
+    document.getElementById("myModal").style.display = "block";
+    document.getElementById(
+      "pollingUnitId"
+    ).innerText = `Polling Unit: ${selectedUnit.id}`;
+    document.getElementById(
+      "pollingUnitName"
+    ).innerText = `Name: ${selectedUnit.name}`;
+    document.getElementById(
+      "pollingUnitState"
+    ).innerText = `State: ${selectedUnit.state}`;
+    document.getElementById(
+      "pollingUnitTotalVotes"
+    ).innerText = `Total Votes: ${selectedUnit.totalVotes}`;
+    document.getElementById("pollingUnitImage").src =
+      "/" + selectedUnit.voteImage;
+
+    const partiesDiv = document.getElementById("party");
+    partiesDiv.innerHTML = "";
+    Object.entries(selectedUnit.parties).forEach(([party, votes]) => {
+      const partyElement = document.createElement("h1");
+      partyElement.innerText = `${party}: ${votes}`;
+      partiesDiv.appendChild(partyElement);
+    });
+  }
+
+  function closeModal() {
+    document.getElementById("myModal").style.display = "none";
+  }
+</script>

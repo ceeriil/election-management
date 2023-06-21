@@ -1,6 +1,34 @@
 const jwt = require("jsonwebtoken");
 const PollingAgent = require("../models/pollingAgent");
 const PollingUnit = require("../models/pollingUnit");
+const multer = require("multer");
+
+// Set up multer storage configuration
+const storage = multer.diskStorage({
+  destination: "uploads/",
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const fileExtension = file.originalname.split(".").pop();
+    cb(null, file.fieldname + "-" + uniqueSuffix + "." + fileExtension);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+
+// const fileFilter = (req, file, cb) => {
+//   if (file.mimetype.startsWith("image/")) {
+//     cb(null, true);
+//   } else {
+//     cb(new Error("File type not supported"), false);
+//   }
+// };
+
+// const upload = multer({
+//   storage: storage,
+//   fileFilter: fileFilter,
+// }).single("voteImage");
+
 
 const pollingAgent_login_get = (req, res) => {
   res.render("pollingAgent/pollingAgentLogin");
@@ -82,33 +110,52 @@ const pollingAgent_add_get = (req, res) => {
 };
 
 const pollingAgent_add_post = async (req, res) => {
-  const { id, name, state, localGovernmentArea, totalVotes, ...parties } =
-    req.body;
-  console.log("Input values:", parties);
-  const newPollingUnit = new PollingUnit({
-    id: id,
-    name: name,
-    state: state,
-    totalVotes: totalVotes,
-    localGovernmentArea: localGovernmentArea,
-    parties: {
-      APC: Number(parties.APC),
-      PDP: Number(parties.PDP),
-      LP: Number(parties.LP),
-      APGA: Number(parties.APGA),
-      ADC: Number(parties.ADC),
-    },
-  });
-
-  console.log("Polling Unit object:", newPollingUnit);
-
   try {
-    await newPollingUnit.save();
-    res.redirect("/pollingAgent/add");
+    upload.single("voteImage")(req, res, async (error) => {
+      if (error) {
+        console.error("Error during file upload:", error);
+        return res.status(500).send("Error during file upload: " + error.message);
+      }
+
+      const { id, name, state, localGovernmentArea, totalVotes, voteImage, ...parties } = req.body;
+      console.log("Input values:", parties);
+      if (!req.file) {
+        return res.status(400).send("No file uploaded");
+      }
+
+      const filePath = req.file.path;
+      const updatedFilePath = filePath.replace(/\\/g, '/');
+      console.log(updatedFilePath);
+
+      const newPollingUnit = new PollingUnit({
+        id: id,
+        name: name,
+        state: state,
+        totalVotes: totalVotes,
+        localGovernmentArea: localGovernmentArea,
+        voteImage: updatedFilePath, // Store the file path in the voteImage field
+        parties: {
+          APC: Number(parties.APC),
+          PDP: Number(parties.PDP),
+          LP: Number(parties.LP),
+          APGA: Number(parties.APGA),
+          ADC: Number(parties.ADC),
+        },
+      });
+
+      console.log("Polling Unit object:", newPollingUnit);
+      console.log("Vote Image:", newPollingUnit.voteImage);
+
+      await newPollingUnit.save();
+      res.redirect("/pollingAgent/add");
+    });
   } catch (error) {
-    res.send("Error: " + error);
+    console.error("Error during file upload:", error);
+    res.status(500).send("Error during file upload: " + error.message);
   }
 };
+
+
 
 const pollingAgent_report_get = (req, res) => {
   res.render("pollingAgent/reportMalpractice");

@@ -21,11 +21,11 @@ const util = require('util');
  * from MongoDB, and the model's post `find` hooks after loading each document.
  *
  * Unless you're an advanced user, do **not** instantiate this class directly.
- * Use [`Query#cursor()`](/docs/api.html#query_Query-cursor) instead.
+ * Use [`Query#cursor()`](/docs/api/query.html#query_Query-cursor) instead.
  *
  * @param {Query} query
  * @param {Object} options query options passed to `.find()`
- * @inherits Readable
+ * @inherits Readable https://nodejs.org/api/stream.html#class-streamreadable
  * @event `cursor`: Emitted when the cursor is created
  * @event `error`: Emitted when an error occurred
  * @event `data`: Emitted when the stream is flowing and the next doc is ready
@@ -66,6 +66,7 @@ function QueryCursor(query, options) {
       // Max out the number of documents we'll populate in parallel at 5000.
       this.options._populateBatchSize = Math.min(this.options.batchSize, 5000);
     }
+    Object.assign(this.options, query._optionsForExec());
     model.collection.find(query._conditions, this.options, (err, cursor) => {
       if (err != null) {
         _this._markError(err);
@@ -85,8 +86,12 @@ function QueryCursor(query, options) {
 
 util.inherits(QueryCursor, Readable);
 
-/*!
+/**
  * Necessary to satisfy the Readable API
+ * @method _read
+ * @memberOf QueryCursor
+ * @instance
+ * @api private
  */
 
 QueryCursor.prototype._read = function() {
@@ -112,7 +117,7 @@ QueryCursor.prototype._read = function() {
  * Registers a transform function which subsequently maps documents retrieved
  * via the streams interface or `.next()`
  *
- * ####Example
+ * #### Example:
  *
  *     // Map documents returned by `data` events
  *     Thing.
@@ -137,17 +142,27 @@ QueryCursor.prototype._read = function() {
  *
  * @param {Function} fn
  * @return {QueryCursor}
+ * @memberOf QueryCursor
  * @api public
  * @method map
  */
 
-QueryCursor.prototype.map = function(fn) {
-  this._transforms.push(fn);
-  return this;
-};
+Object.defineProperty(QueryCursor.prototype, 'map', {
+  value: function(fn) {
+    this._transforms.push(fn);
+    return this;
+  },
+  enumerable: true,
+  configurable: true,
+  writable: true
+});
 
-/*!
+/**
  * Marks this cursor as errored
+ * @method _markError
+ * @memberOf QueryCursor
+ * @instance
+ * @api private
  */
 
 QueryCursor.prototype._markError = function(error) {
@@ -164,7 +179,7 @@ QueryCursor.prototype._markError = function(error) {
  * @api public
  * @method close
  * @emits close
- * @see MongoDB driver cursor#close http://mongodb.github.io/node-mongodb-native/2.1/api/Cursor.html#close
+ * @see AggregationCursor.close https://mongodb.github.io/node-mongodb-native/4.9/classes/AggregationCursor.html#close
  */
 
 QueryCursor.prototype.close = function(callback) {
@@ -178,6 +193,24 @@ QueryCursor.prototype.close = function(callback) {
       cb(null);
     });
   }, this.model.events);
+};
+
+/**
+ * Rewind this cursor to its uninitialized state. Any options that are present on the cursor will
+ * remain in effect. Iterating this cursor will cause new queries to be sent to the server, even
+ * if the resultant data has already been retrieved by this cursor.
+ *
+ * @return {AggregationCursor} this
+ * @api public
+ * @method rewind
+ */
+
+QueryCursor.prototype.rewind = function() {
+  const _this = this;
+  _waitForCursor(this, function() {
+    _this.cursor.rewind();
+  });
+  return this;
 };
 
 /**
@@ -206,7 +239,7 @@ QueryCursor.prototype.next = function(callback) {
  * will wait for the promise to resolve before iterating on to the next one.
  * Returns a promise that resolves when done.
  *
- * ####Example
+ * #### Example:
  *
  *     // Iterate over documents asynchronously
  *     Thing.
@@ -220,6 +253,8 @@ QueryCursor.prototype.next = function(callback) {
  * @param {Function} fn
  * @param {Object} [options]
  * @param {Number} [options.parallel] the number of promises to execute in parallel. Defaults to 1.
+ * @param {Number} [options.batchSize] if set, will call `fn()` with arrays of documents with length at most `batchSize`
+ * @param {Boolean} [options.continueOnError=false] if true, `eachAsync()` iterates through all docs even if `fn` throws an error. If false, `eachAsync()` throws an error immediately if the given function `fn()` throws an error.
  * @param {Function} [callback] executed when all docs have been processed
  * @return {Promise}
  * @api public
@@ -247,7 +282,7 @@ QueryCursor.prototype.eachAsync = function(fn, opts, callback) {
 QueryCursor.prototype.options;
 
 /**
- * Adds a [cursor flag](http://mongodb.github.io/node-mongodb-native/2.2/api/Cursor.html#addCursorFlag).
+ * Adds a [cursor flag](https://mongodb.github.io/node-mongodb-native/4.9/classes/FindCursor.html#addCursorFlag).
  * Useful for setting the `noCursorTimeout` and `tailable` flags.
  *
  * @param {String} flag
@@ -293,7 +328,7 @@ QueryCursor.prototype._transformForAsyncIterator = function() {
  * You do not need to call this function explicitly, the JavaScript runtime
  * will call it for you.
  *
- * ####Example
+ * #### Example:
  *
  *     // Works without using `cursor()`
  *     for await (const doc of Model.find([{ $sort: { name: 1 } }])) {
@@ -312,8 +347,8 @@ QueryCursor.prototype._transformForAsyncIterator = function() {
  * `Symbol.asyncIterator` is undefined, that means your Node.js version does not
  * support async iterators.
  *
- * @method Symbol.asyncIterator
- * @memberOf Query
+ * @method [Symbol.asyncIterator]
+ * @memberOf QueryCursor
  * @instance
  * @api public
  */
@@ -332,9 +367,12 @@ function _transformForAsyncIterator(doc) {
   return doc == null ? { done: true } : { value: doc, done: false };
 }
 
-/*!
+/**
  * Get the next doc from the underlying cursor and mongooseify it
  * (populate, etc.)
+ * @param {Any} ctx
+ * @param {Function} cb
+ * @api private
  */
 
 function _next(ctx, cb) {
@@ -467,7 +505,8 @@ function _nextDoc(ctx, doc, pop, callback) {
     });
   }
 
-  _create(ctx, doc, pop, (err, doc) => {
+  const { model, _fields, _userProvidedFields, options } = ctx.query;
+  helpers.createModelAndInit(model, doc, _fields, _userProvidedFields, options, pop, (err, doc) => {
     if (err != null) {
       return callback(err);
     }
@@ -493,24 +532,6 @@ function _waitForCursor(ctx, cb) {
       return;
     }
     cb();
-  });
-}
-
-/*!
- * Convert a raw doc into a full mongoose doc.
- */
-
-function _create(ctx, doc, populatedIds, cb) {
-  const instance = helpers.createModel(ctx.query.model, doc, ctx.query._fields);
-  const opts = populatedIds ?
-    { populated: populatedIds } :
-    undefined;
-
-  instance.$init(doc, opts, function(err) {
-    if (err) {
-      return cb(err);
-    }
-    cb(null, instance);
   });
 }
 
