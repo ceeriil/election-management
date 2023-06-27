@@ -1,0 +1,15 @@
+<!-- Display the party votes -->
+<h2>Party Votes</h2>
+<ul>
+  <% for (const party in partyVotes) { %>
+  <li><%= party %>: <%= partyVotes[party] %></li>
+  <% } %>
+</ul>
+
+<!-- Display the winners -->
+<h2>Winners</h2>
+<ul>
+  <% for (const party in winners) { %>
+  <li><%= party %>: <%= winners[party] %></li>
+  <% } %>
+</ul>
