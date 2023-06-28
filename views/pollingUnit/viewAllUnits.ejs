@@ -1,0 +1,31 @@
+<a
+  href="/pollingUnit/option"
+  class="btn ml-4"
+  style="margin-top: 5px; color: #503efe"
+  >Back</a
+>
+<h4 class="hero-text">All Polling Units</h4>
+<div class="tableDiv">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Name</th>
+        <th scope="col">State</th>
+        <th scope="col">Total Votes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% pollingUnits.forEach(element => { %>
+      <tr class="head">
+        <td><%= element.id %></td>
+        <td><%= element.name %></td>
+        <td><%= element.state %></td>
+        <td><%= element.totalVotes %></td>
+        <!--  <td><a href="/pollingUnit/view/<%= element.id %>">View</a></td>
+      </tr> -->
+        <% }) %>
+      </tr>
+    </tbody>
+  </table>
+</div>
