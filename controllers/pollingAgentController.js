@@ -42,7 +42,9 @@ const pollingAgent_viewAll_get = async (req, res) => {
     { name: "ADC", },
   ];
 
-  res.render("pollingAgent/viewAll", { pollingUnits: allPollingUnits, parties: parties });
+  const selectedPollingUnitId = req.params.id;
+  const selectedUnit = allPollingUnits.find(unit => unit.id === selectedPollingUnitId);
+  res.render("pollingAgent/viewAll", { pollingUnits: allPollingUnits, parties: parties, selectedUnit: selectedUnit });
 };
 
 const pollingAgent_edit_get = async (req, res) => {
