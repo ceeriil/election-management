@@ -33,7 +33,16 @@ const pollingAgent_login_post = async (req, res) => {
 
 const pollingAgent_viewAll_get = async (req, res) => {
   const allPollingUnits = await PollingUnit.find();
-  res.render("pollingAgent/viewAll", { pollingUnits: allPollingUnits });
+
+  const parties = [
+    { name: "APC", },
+    { name: "PDP", },
+    { name: "LP", },
+    { name: "APGA", },
+    { name: "ADC", },
+  ];
+
+  res.render("pollingAgent/viewAll", { pollingUnits: allPollingUnits, parties: parties });
 };
 
 const pollingAgent_edit_get = async (req, res) => {
@@ -57,14 +66,17 @@ const pollingAgent_option_get = (req, res) => {
 
 const pollingAgent_add_get = (req, res) => {
   const parties = [
-    { name: "APC" },
-    { name: "PDP" },
-    { name: "LP" },
-    { name: "APGA" },
-    { name: "ADC" },
+    { name: "APC", id: 'num1' },
+    { name: "PDP", id: 'num2' },
+    { name: "LP", id: 'num3' },
+    { name: "APGA", id: 'num4' },
+    { name: "ADC", id: 'num5' },
   ];
 
-  res.render("pollingAgent/addPollingUnit", { parties: parties });
+  const { num1, num2, num3, num4, num5 } = req.body;
+  const sum = parseInt(num1) + parseInt(num2) + parseInt(num3) + parseInt(num4) + parseInt(num5);
+
+  res.render("pollingAgent/addPollingUnit", { parties: parties, sum: sum });
 };
 
 const pollingAgent_add_post = async (req, res) => {
@@ -101,6 +113,7 @@ module.exports = {
   pollingAgent_login_get,
   pollingAgent_login_post,
   pollingAgent_viewAll_get,
+  pollingAgent_add_post,
   pollingAgent_edit_get,
   pollingAgent_edit_post,
   pollingAgent_delete_get,

@@ -1,6 +1,77 @@
 <a href="/pollingAgent/option" class="btn btn-info" style="margin-top: 5px"
   >Back</a
 >
+
+<style>
+  /* CSS styles for the modal */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, .8);
+  }
+  
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+  }
+
+  .party_head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .party_head_text {
+    font-size: 18px;
+  }
+
+  .parties {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .parties h1 {
+    font-size: 12px;
+    width: 2%;
+  }
+</style>
+
+<div id="myModal" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2>Vote Details</h2>
+    <div>
+      <div class="party_head">
+        <% parties.forEach(party => { %>
+          <h1 class="party_head_text"><%= party.name %></h1>
+        <% }) %>
+      </div>
+      
+
+      <div class="parties">
+        <h1><%= pollingUnits[0].parties.APC %></h1>
+        <h1><%= pollingUnits[0].parties.PDP %></h1>
+        <h1><%= pollingUnits[0].parties.LP %></h1>
+        <h1><%= pollingUnits[0].parties.APGA %></h1>
+        <h1><%= pollingUnits[0].parties.ADC %></h1>
+      </div>
+    </div>
+  </div>
+</div>
+
 <h4>All Polling Units</h4>
 <div class="tableDiv">
   <table class="table table-striped">
@@ -15,7 +86,7 @@
     </thead>
     <tbody>
       <% pollingUnits.forEach(element => { %>
-      <tr class="head">
+      <tr class="head" onclick="openModal()">
         <td><%= element.id%></td>
         <td><%= element.name %></td>
         <td><%= element.state %></td>
@@ -37,3 +108,15 @@
     </tbody>
   </table>
 </div>
+
+<script>
+  // JavaScript functions to open and close the modal
+  function openModal() {
+    document.getElementById("myModal").style.display = "block";
+  }
+
+  function closeModal() {
+    document.getElementById("myModal").style.display = "none";
+  }
+
+</script>
