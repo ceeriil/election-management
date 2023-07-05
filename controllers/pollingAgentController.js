@@ -110,6 +110,10 @@ const pollingAgent_add_post = async (req, res) => {
   }
 };
 
+const pollingAgent_report_get = (req, res) => {
+  res.render("pollingAgent/reportMalpractice");
+};
+
 // Exporting Polling Agent controller functions
 module.exports = {
   pollingAgent_login_get,
@@ -122,4 +126,5 @@ module.exports = {
   pollingAgent_add_post,
   pollingAgent_add_get,
   pollingAgent_option_get,
+  pollingAgent_report_get,
 };
