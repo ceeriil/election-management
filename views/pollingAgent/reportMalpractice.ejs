@@ -1,0 +1,110 @@
+<style>
+    .mb-3 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .check {
+        cursor: pointer;
+    }
+
+    .input {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 3rem;
+    }
+
+    .title {
+        font-size: 20px;
+        text-align: center;
+        margin-top: 20px;
+        text-transform: capitalize;
+        text-decoration: underline;
+        margin-bottom: 1rem;
+        color: #818486;
+    }
+</style>
+
+<a href="/pollingAgent/option" class="btn btn-info" style="margin-top: 5px"
+  >Back</a
+>
+
+<h4>Report Election Malpractice</h4>
+
+<form method="POST" class="addPU" autocomplete="off">
+    <div class="input">
+        <label for="exampleInputEmail1">Polling Unit ID : </label>
+        <input
+          type="string"
+          name="id"
+          required
+          class="form-control"
+          id="exampleInputEmail1"
+        />
+    </div>
+
+    <h1 class="title">Type of Electoral Malpractice</h1>
+
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Delayed Voting (INEC late arrival)</label>
+    <input
+      type="checkbox"
+      name="id"
+      class="check"
+      id="exampleInputEmail1"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Underage Voting </label>
+    <input
+      type="checkbox"
+      name="name"
+      class="check"
+      id="exampleInputEmail1"
+    />
+  </div>
+
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Over Voting</label>
+    <input
+      type="checkbox"
+      name="state"
+      class="check"
+      id="exampleInputEmail1"
+    />
+  </div>
+
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Destruction of election materials</label>
+    <input
+      type="checkbox"
+      name="state"
+      class="check"
+      id="exampleInputEmail1"
+    />
+  </div>
+
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Voter intimidation</label>
+    <input
+      type="checkbox"
+      name="state"
+      class="check"
+      id="exampleInputEmail1"
+    />
+  </div>
+
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Voter disenfranchisement</label>
+    <input
+      type="checkbox"
+      name="state"
+      class="check"
+      id="exampleInputEmail1"
+    />
+  </div>
+
+  
+  <button type="submit" class="btn btn-success">Report</button>
+</form>

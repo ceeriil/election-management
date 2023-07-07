@@ -13,5 +13,6 @@ router.get("/delete/:id", pollingAgentController.pollingAgent_delete_get);
 router.get("/option", pollingAgentController.pollingAgent_option_get);
 router.post("/add", pollingAgentController.pollingAgent_add_post);
 router.get("/add", pollingAgentController.pollingAgent_add_get);
+router.get("/reportmalpractice", pollingAgentController.pollingAgent_report_get);
 
 module.exports = router;
