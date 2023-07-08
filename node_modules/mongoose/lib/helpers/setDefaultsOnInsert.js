@@ -79,14 +79,23 @@ module.exports = function(filter, schema, castedDoc, options) {
       return;
     }
     const def = schemaType.getDefault(null, true);
-    if (!isModified(modified, path) && typeof def !== 'undefined') {
-      castedDoc = castedDoc || {};
-      castedDoc.$setOnInsert = castedDoc.$setOnInsert || {};
-      if (get(castedDoc, path) == null) {
-        castedDoc.$setOnInsert[path] = def;
-      }
-      updatedValues[path] = def;
+    if (isModified(modified, path)) {
+      return;
     }
+    if (typeof def === 'undefined') {
+      return;
+    }
+    if (schemaType.splitPath().includes('$*')) {
+      // Skip defaults underneath maps. We should never do `$setOnInsert` on a path with `$*`
+      return;
+    }
+
+    castedDoc = castedDoc || {};
+    castedDoc.$setOnInsert = castedDoc.$setOnInsert || {};
+    if (get(castedDoc, path) == null) {
+      castedDoc.$setOnInsert[path] = def;
+    }
+    updatedValues[path] = def;
   });
 
   return castedDoc;
@@ -96,6 +105,8 @@ function isModified(modified, path) {
   if (modified[path]) {
     return true;
   }
+
+  // Is any parent path of `path` modified?
   const sp = path.split('.');
   let cur = sp[0];
   for (let i = 1; i < sp.length; ++i) {
@@ -104,5 +115,18 @@ function isModified(modified, path) {
     }
     cur += '.' + sp[i];
   }
+
+  // Is any child of `path` modified?
+  const modifiedKeys = Object.keys(modified);
+  if (modifiedKeys.length) {
+    const parentPath = path + '.';
+
+    for (const modifiedPath of modifiedKeys) {
+      if (modifiedPath.slice(0, path.length + 1) === parentPath) {
+        return true;
+      }
+    }
+  }
+
   return false;
 }

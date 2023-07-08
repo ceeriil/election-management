@@ -1,13 +1,14 @@
 'use strict';
 
 const documentSchemaSymbol = require('../../helpers/symbols').documentSchemaSymbol;
-const get = require('../../helpers/get');
 const internalToObjectOptions = require('../../options').internalToObjectOptions;
 const utils = require('../../utils');
 
 let Document;
 const getSymbol = require('../../helpers/symbols').getSymbol;
 const scopeSymbol = require('../../helpers/symbols').scopeSymbol;
+
+const isPOJO = utils.isPOJO;
 
 /*!
  * exports
@@ -16,32 +17,58 @@ const scopeSymbol = require('../../helpers/symbols').scopeSymbol;
 exports.compile = compile;
 exports.defineKey = defineKey;
 
-/*!
+const _isEmptyOptions = Object.freeze({
+  minimize: true,
+  virtuals: false,
+  getters: false,
+  transform: false
+});
+
+const noDottedPathGetOptions = Object.freeze({
+  noDottedPath: true
+});
+
+/**
  * Compiles schemas.
+ * @param {Object} tree
+ * @param {Any} proto
+ * @param {String} prefix
+ * @param {Object} options
+ * @api private
  */
 
 function compile(tree, proto, prefix, options) {
   Document = Document || require('../../document');
+  const typeKey = options.typeKey;
 
   for (const key of Object.keys(tree)) {
     const limb = tree[key];
 
-    const hasSubprops = utils.isPOJO(limb) && Object.keys(limb).length &&
-      (!limb[options.typeKey] || (options.typeKey === 'type' && limb.type.type));
+    const hasSubprops = isPOJO(limb) &&
+      Object.keys(limb).length > 0 &&
+      (!limb[typeKey] || (typeKey === 'type' && isPOJO(limb.type) && limb.type.type));
     const subprops = hasSubprops ? limb : null;
 
     defineKey({ prop: key, subprops: subprops, prototype: proto, prefix: prefix, options: options });
   }
 }
 
-/*!
+/**
  * Defines the accessor named prop on the incoming prototype.
+ * @param {Object} options
+ * @param {String} options.prop
+ * @param {Boolean} options.subprops
+ * @param {Any} options.prototype
+ * @param {String} [options.prefix]
+ * @param {Object} options.options
+ * @api private
  */
 
 function defineKey({ prop, subprops, prototype, prefix, options }) {
   Document = Document || require('../../document');
   const path = (prefix ? prefix + '.' : '') + prop;
   prefix = prefix || '';
+  const useGetOptions = prefix ? Object.freeze({}) : noDottedPathGetOptions;
 
   if (subprops) {
     Object.defineProperty(prototype, prop, {
@@ -89,7 +116,11 @@ function defineKey({ prop, subprops, prototype, prefix, options }) {
             writable: false,
             value: function() {
               return utils.clone(_this.get(path, null, {
-                virtuals: get(this, 'schema.options.toObject.virtuals', null)
+                virtuals: this &&
+                  this.schema &&
+                  this.schema.options &&
+                  this.schema.options.toObject &&
+                  this.schema.options.toObject.virtuals || null
               }));
             }
           });
@@ -100,7 +131,7 @@ function defineKey({ prop, subprops, prototype, prefix, options }) {
             writable: false,
             value: function() {
               return _this.get(path, null, {
-                virtuals: get(this, 'schema.options.toObject.virtuals', null)
+                virtuals: this && this.schema && this.schema.options && this.schema.options.toObject && this.schema.options.toObject.virtuals || null
               });
             }
           });
@@ -111,7 +142,7 @@ function defineKey({ prop, subprops, prototype, prefix, options }) {
             writable: false,
             value: function() {
               return _this.get(path, null, {
-                virtuals: get(_this, 'schema.options.toJSON.virtuals', null)
+                virtuals: this && this.schema && this.schema.options && this.schema.options.toJSON && this.schema.options.toJSON.virtuals || null
               });
             }
           });
@@ -123,12 +154,6 @@ function defineKey({ prop, subprops, prototype, prefix, options }) {
             value: true
           });
 
-          const _isEmptyOptions = Object.freeze({
-            minimize: true,
-            virtuals: false,
-            getters: false,
-            transform: false
-          });
           Object.defineProperty(nested, '$isEmpty', {
             enumerable: false,
             configurable: true,
@@ -168,7 +193,12 @@ function defineKey({ prop, subprops, prototype, prefix, options }) {
       enumerable: true,
       configurable: true,
       get: function() {
-        return this[getSymbol].call(this.$__[scopeSymbol] || this, path);
+        return this[getSymbol].call(
+          this.$__[scopeSymbol] || this,
+          path,
+          null,
+          useGetOptions
+        );
       },
       set: function(v) {
         this.$set.call(this.$__[scopeSymbol] || this, path, v);

@@ -12,6 +12,7 @@ const pollingUnitSchema = new Schema({
   state: String,
   localGovernmentArea: String,
   totalVotes: Number,
+  voteImage: String,
   parties: {
     APC: {
       type: Number,

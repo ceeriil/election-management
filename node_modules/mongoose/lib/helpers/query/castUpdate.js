@@ -14,16 +14,17 @@ const schemaMixedSymbol = require('../../schema/symbols').schemaMixedSymbol;
 const setDottedPath = require('../path/setDottedPath');
 const utils = require('../../utils');
 
-/*!
+/**
  * Casts an update op based on the given schema
  *
  * @param {Schema} schema
  * @param {Object} obj
- * @param {Object} options
+ * @param {Object} [options]
  * @param {Boolean} [options.overwrite] defaults to false
  * @param {Boolean|String} [options.strict] defaults to true
  * @param {Query} context passed to setters
  * @return {Boolean} true iff the update is non-empty
+ * @api private
  */
 module.exports = function castUpdate(schema, obj, options, context, filter) {
   if (obj == null) {
@@ -41,12 +42,8 @@ module.exports = function castUpdate(schema, obj, options, context, filter) {
     }
     return obj;
   }
-  if (schema.options.strict === 'throw' && obj.hasOwnProperty(schema.options.discriminatorKey)) {
-    throw new StrictModeError(schema.options.discriminatorKey);
-  } else if (context._mongooseOptions != null && !context._mongooseOptions.overwriteDiscriminatorKey) {
-    delete obj[schema.options.discriminatorKey];
-  }
-  if (options.upsert) {
+
+  if (options.upsert && !options.overwrite) {
     moveImmutableProperties(schema, obj, context);
   }
 
@@ -122,9 +119,9 @@ module.exports = function castUpdate(schema, obj, options, context, filter) {
 
 function castPipelineOperator(op, val) {
   if (op === '$unset') {
-    if (!Array.isArray(val) || val.find(v => typeof v !== 'string')) {
+    if (typeof val !== 'string' && (!Array.isArray(val) || val.find(v => typeof v !== 'string'))) {
       throw new MongooseError('Invalid $unset in pipeline, must be ' +
-        'an array of strings');
+        ' a string or an array of strings');
     }
     return val;
   }
@@ -149,17 +146,18 @@ function castPipelineOperator(op, val) {
   throw new MongooseError('Invalid update pipeline operator: "' + op + '"');
 }
 
-/*!
+/**
  * Walk each path of obj and cast its values
  * according to its schema.
  *
  * @param {Schema} schema
- * @param {Object} obj - part of a query
- * @param {String} op - the atomic operator ($pull, $set, etc)
- * @param {Object} options
+ * @param {Object} obj part of a query
+ * @param {String} op the atomic operator ($pull, $set, etc)
+ * @param {Object} [options]
  * @param {Boolean|String} [options.strict]
  * @param {Query} context
- * @param {String} pref - path prefix (internal only)
+ * @param {Object} filter
+ * @param {String} pref path prefix (internal only)
  * @return {Bool} true if this path has keys to update
  * @api private
  */
@@ -176,6 +174,8 @@ function walkUpdatePath(schema, obj, op, options, context, filter, pref) {
 
   let aggregatedError = null;
 
+  const strictMode = strict != null ? strict : schema.options.strict;
+
   while (i--) {
     key = keys[i];
     val = obj[key];
@@ -187,6 +187,23 @@ function walkUpdatePath(schema, obj, op, options, context, filter, pref) {
       if (schematype != null && schematype.schema != null) {
         obj[key] = cast(schematype.schema, obj[key], options, context);
         hasKeys = true;
+        continue;
+      }
+    }
+
+    const discriminatorKey = (prefix ? prefix + key : key);
+    if (
+      schema.discriminatorMapping != null &&
+      discriminatorKey === schema.options.discriminatorKey &&
+      schema.discriminatorMapping.value !== obj[key] &&
+      !options.overwriteDiscriminatorKey
+    ) {
+      if (strictMode === 'throw') {
+        const err = new Error('Can\'t modify discriminator key "' + discriminatorKey + '" on discriminator model');
+        aggregatedError = _appendError(err, context, discriminatorKey, aggregatedError);
+        continue;
+      } else if (strictMode) {
+        delete obj[key];
         continue;
       }
     }
@@ -203,6 +220,7 @@ function walkUpdatePath(schema, obj, op, options, context, filter, pref) {
       }
 
       if (op !== '$setOnInsert' &&
+          !options.overwrite &&
           handleImmutable(schematype, strict, obj, key, prefix + key, context)) {
         continue;
       }
@@ -216,7 +234,7 @@ function walkUpdatePath(schema, obj, op, options, context, filter, pref) {
               $each: castUpdateVal(schematype, val.$each, op, key, context, prefix + key)
             };
           } catch (error) {
-            aggregatedError = _handleCastError(error, context, key, aggregatedError);
+            aggregatedError = _appendError(error, context, key, aggregatedError);
           }
 
           if (val.$slice != null) {
@@ -236,13 +254,13 @@ function walkUpdatePath(schema, obj, op, options, context, filter, pref) {
             try {
               obj[key] = schematype.castForQuery(val, context, { strict: _strict });
             } catch (error) {
-              aggregatedError = _handleCastError(error, context, key, aggregatedError);
+              aggregatedError = _appendError(error, context, key, aggregatedError);
             }
           } else {
             try {
               obj[key] = castUpdateVal(schematype, val, op, key, context, prefix + key);
             } catch (error) {
-              aggregatedError = _handleCastError(error, context, key, aggregatedError);
+              aggregatedError = _appendError(error, context, key, aggregatedError);
             }
           }
 
@@ -258,7 +276,7 @@ function walkUpdatePath(schema, obj, op, options, context, filter, pref) {
         try {
           obj[key] = castUpdateVal(schematype, val, op, key, context, prefix + key);
         } catch (error) {
-          aggregatedError = _handleCastError(error, context, key, aggregatedError);
+          aggregatedError = _appendError(error, context, key, aggregatedError);
         }
 
         if (obj[key] === void 0) {
@@ -297,6 +315,7 @@ function walkUpdatePath(schema, obj, op, options, context, filter, pref) {
 
       // You can use `$setOnInsert` with immutable keys
       if (op !== '$setOnInsert' &&
+          !options.overwrite &&
           handleImmutable(schematype, strict, obj, key, prefix + key, context)) {
         continue;
       }
@@ -349,11 +368,14 @@ function walkUpdatePath(schema, obj, op, options, context, filter, pref) {
             delete obj[key];
           }
         } catch (error) {
-          aggregatedError = _handleCastError(error, context, key, aggregatedError);
+          aggregatedError = _appendError(error, context, key, aggregatedError);
         }
 
         if (Array.isArray(obj[key]) && (op === '$addToSet' || op === '$push') && key !== '$each') {
-          if (schematype && schematype.caster && !schematype.caster.$isMongooseArray) {
+          if (schematype &&
+              schematype.caster &&
+              !schematype.caster.$isMongooseArray &&
+              !schematype.caster[schemaMixedSymbol]) {
             obj[key] = { $each: obj[key] };
           }
         }
@@ -379,7 +401,7 @@ function walkUpdatePath(schema, obj, op, options, context, filter, pref) {
  * ignore
  */
 
-function _handleCastError(error, query, key, aggregatedError) {
+function _appendError(error, query, key, aggregatedError) {
   if (typeof query !== 'object' || !query.options.multipleCastError) {
     throw error;
   }
@@ -388,9 +410,10 @@ function _handleCastError(error, query, key, aggregatedError) {
   return aggregatedError;
 }
 
-/*!
+/**
  * These operators should be cast to numbers instead
  * of their path schema type.
+ * @api private
  */
 
 const numberOps = {
@@ -398,17 +421,19 @@ const numberOps = {
   $inc: 1
 };
 
-/*!
+/**
  * These ops require no casting because the RHS doesn't do anything.
+ * @api private
  */
 
 const noCastOps = {
   $unset: 1
 };
 
-/*!
+/**
  * These operators require casting docs
  * to real Documents for Update operations.
+ * @api private
  */
 
 const castOps = {
@@ -427,14 +452,15 @@ const overwriteOps = {
   $setOnInsert: 1
 };
 
-/*!
+/**
  * Casts `val` according to `schema` and atomic `op`.
  *
  * @param {SchemaType} schema
  * @param {Object} val
- * @param {String} op - the atomic operator ($pull, $set, etc)
+ * @param {String} op the atomic operator ($pull, $set, etc)
  * @param {String} $conditional
  * @param {Query} context
+ * @param {String} path
  * @api private
  */
 
@@ -450,6 +476,8 @@ function castUpdateVal(schema, val, op, $conditional, context, path) {
     }
     return val;
   }
+
+  // console.log('CastUpdateVal', path, op, val, schema);
 
   const cond = schema.caster && op in castOps &&
       (utils.isObject(val) || Array.isArray(val));
