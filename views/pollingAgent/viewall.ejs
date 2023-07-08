@@ -1,4 +1,7 @@
-<a href="/pollingAgent/option" class="btn btn-info" style="margin-top: 5px"
+<a
+  href="/pollingAgent/option"
+  class="btn ml-4"
+  style="margin-top: 5px; color: #503efe"
   >Back</a
 >
 
@@ -13,9 +16,9 @@
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, .8);
+    background-color: rgba(0, 0, 0, 0.8);
   }
-  
+
   .modal-content {
     background-color: #fefefe;
     margin: 15% auto;
@@ -38,7 +41,10 @@
     gap: 3rem;
   }
 
-  #pollingUnitId, #pollingUnitName, #pollingUnitState, #pollingUnitTotalVotes {
+  #pollingUnitId,
+  #pollingUnitName,
+  #pollingUnitState,
+  #pollingUnitTotalVotes {
     font-size: 12px;
   }
 
@@ -47,22 +53,31 @@
   } */
 </style>
 
-<img src="../../img/css4.PNG" alt="">
+<img src="../../img/css4.PNG" alt="" />
 
 <div id="myModal" class="modal">
   <!-- Modal content -->
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
     <h2>Vote Details</h2>
-    <div>  
+    <div>
       <div class="party_head">
         <h1 id="pollingUnitId">0</h1>
-        <h1 id="pollingUnitName">Name: </h1>
-        <h1 id="pollingUnitState">State: </h1>
-        <h1 id="pollingUnitTotalVotes">Total Votes: </h1>
-        <img id="pollingUnitImage" src="/uploads/voteImage-1688755726677-516552805.PNG" alt="" width="200px" height="200px">
+        <h1 id="pollingUnitName">Name:</h1>
+        <h1 id="pollingUnitState">State:</h1>
+        <h1 id="pollingUnitTotalVotes">Total Votes:</h1>
+        <h1 id="pollingUnitName">Name:</h1>
+        <h1 id="pollingUnitState">State:</h1>
+        <h1 id="pollingUnitTotalVotes">Total Votes:</h1>
+        <img
+          id="pollingUnitImage"
+          src="/uploads/voteImage-1688755726677-516552805.PNG"
+          alt=""
+          width="200px"
+          height="200px"
+        />
       </div>
-      
+
       <div class="parties">
         <div id="party"></div>
       </div>
@@ -70,7 +85,7 @@
   </div>
 </div>
 
-<h4>All Polling Units</h4>
+<h4 class="hero-text mb-2">All Polling Units</h4>
 <div class="tableDiv">
   <table class="table table-striped">
     <thead>
@@ -110,15 +125,24 @@
 <script>
   // JavaScript functions to open and close the modal
   function openModal(id) {
-    const pollingUnitsData = JSON.parse('<%- JSON.stringify(pollingUnits) %>');
-    const selectedUnit = pollingUnitsData.find(unit => unit.id === id);
-    console.log(selectedUnit)
+    const pollingUnitsData = JSON.parse("<%- JSON.stringify(pollingUnits) %>");
+    const selectedUnit = pollingUnitsData.find((unit) => unit.id === id);
+    console.log(selectedUnit);
     document.getElementById("myModal").style.display = "block";
-    document.getElementById("pollingUnitId").innerText = `Polling Unit: ${selectedUnit.id}`;
-    document.getElementById("pollingUnitName").innerText = `Name: ${selectedUnit.name}`;
-    document.getElementById("pollingUnitState").innerText = `State: ${selectedUnit.state}`;
-    document.getElementById("pollingUnitTotalVotes").innerText = `Total Votes: ${selectedUnit.totalVotes}`;
-    document.getElementById("pollingUnitImage").src = "/" + selectedUnit.voteImage;
+    document.getElementById(
+      "pollingUnitId"
+    ).innerText = `Polling Unit: ${selectedUnit.id}`;
+    document.getElementById(
+      "pollingUnitName"
+    ).innerText = `Name: ${selectedUnit.name}`;
+    document.getElementById(
+      "pollingUnitState"
+    ).innerText = `State: ${selectedUnit.state}`;
+    document.getElementById(
+      "pollingUnitTotalVotes"
+    ).innerText = `Total Votes: ${selectedUnit.totalVotes}`;
+    document.getElementById("pollingUnitImage").src =
+      "/" + selectedUnit.voteImage;
 
     const partiesDiv = document.getElementById("party");
     partiesDiv.innerHTML = "";

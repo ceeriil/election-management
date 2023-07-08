@@ -18,6 +18,7 @@
     "express-session": "^1.17.3",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.1.1",
+    "particlesjs": "^2.2.3",
     "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {

@@ -2,103 +2,120 @@
   >Back</a
 >
 
-<h4>Add Result of Polling Unit</h4>
-<form method="POST" class="addPU" autocomplete="off" enctype="multipart/form-data">
-  <div class="mb-3">
-    <label for="exampleInputEmail1" class="form-label">ID : </label>
-    <input
-      type="string"
-      name="id"
-      required
-      class="form-control"
-      id="exampleInputEmail1"
-    />
-  </div>
-  <div class="mb-3">
-    <label for="exampleInputEmail1" class="form-label">Name : </label>
-    <input
-      type="text"
-      name="name"
-      required
-      class="form-control"
-      id="exampleInputEmail1"
-    />
-  </div>
-  <div class="mb-3">
-    <label for="exampleInputEmail1" class="form-label">State : </label>
-    <input
-      type="text"
-      name="state"
-      required
-      class="form-control"
-      id="exampleInputEmail1"
-    />
-  </div>
+<h4 class="hero-text mb-2">Add Result of Polling Unit</h4>
+<form method="POST" class="addPU" autocomplete="off">
+  <form
+    method="POST"
+    class="addPU"
+    autocomplete="off"
+    enctype="multipart/form-data"
+  >
+    <div class="mb-3">
+      <label for="exampleInputEmail1" class="form-label">ID : </label>
+      <input
+        type="string"
+        name="id"
+        required
+        class="form-control"
+        id="exampleInputEmail1"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputEmail1" class="form-label">Name : </label>
+      <input
+        type="text"
+        name="name"
+        required
+        class="form-control"
+        id="exampleInputEmail1"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputEmail1" class="form-label">State : </label>
+      <input
+        type="text"
+        name="state"
+        required
+        class="form-control"
+        id="exampleInputEmail1"
+      />
+    </div>
 
-  <div>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Party</th>
-          <th>Votes</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for (const party of parties) { %>
-        <tr>
-          <td><%= party.name %></td>
-          <td>
-            <input
-              type="number"
-              name="<%= party.name %>"
-              required
-              id="<%= party.id %>"
-              class="form-control"
-              oninput="calculateSum()"
-              class="parties"
-            />
-          </td>
-        </tr>
-        <% } %>
-      </tbody>
-    </table>
-  </div>
+    <div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Party</th>
+            <th>Votes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (const party of parties) { %>
+          <tr>
+            <td><%= party.name %></td>
+            <td>
+              <input
+                type="number"
+                name="<%= party.name %>"
+                required
+                id="<%= party.id %>"
+                class="form-control"
+                oninput="calculateSum()"
+                class="parties"
+              />
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
 
-  <div class="mb-3">
-    <label for="image" class="form-label">Vote Image:</label>
-    <input type="file" name="voteImage" id="image" class="form-control" accept="image/*" required>
-  </div>
+    <div class="mb-3">
+      <label for="image" class="form-label">Vote Image:</label>
+      <input
+        type="file"
+        name="voteImage"
+        id="image"
+        class="form-control"
+        accept="image/*"
+        required
+      />
+    </div>
 
-  <div class="mb-3">
-    <label for="exampleInputEmail1" class="form-label">Total Votes : </label>
-    <input
-      name="totalVotes"
-      class="form-control"
-      value="<%= sum || 0 %>"
-      id="totalVotes"
-      readonly
-    />
-  </div>
-  <button type="submit" class="btn btn-success">Add</button>
-  <a href="/pollingAgent/viewall" class="btn btn-primary">View All</a>
+    <div class="mb-3">
+      <label for="exampleInputEmail1" class="form-label">Total Votes : </label>
+      <input
+        name="totalVotes"
+        class="form-control"
+        value="<%= sum || 0 %>"
+        id="totalVotes"
+        readonly
+      />
+    </div>
+    <button type="submit" class="btn btn-success">Add</button>
+    <a href="/pollingAgent/viewall" class="btn btn-primary">View All</a>
+  </form>
+
+  <script>
+    function calculateSum() {
+      const inputs = document.querySelectorAll('input[type="number"]');
+      const inputValues = [];
+
+      inputs.forEach((input) => {
+        const inputValue = parseInt(input.value);
+        if (!isNaN(inputValue)) {
+          inputValues.push(inputValue);
+        }
+      });
+
+      const sum = inputValues.reduce(
+        (accumulator, currentValue) => accumulator + currentValue,
+        0
+      );
+
+      console.log("Sum:", sum);
+
+      document.getElementById("totalVotes").value = sum;
+    }
+  </script>
 </form>
-
-<script>
-  function calculateSum() {
-    const inputs = document.querySelectorAll('input[type="number"]');
-    const inputValues = [];
-
-    inputs.forEach((input) => {
-      const inputValue = parseInt(input.value);
-      if (!isNaN(inputValue)) {
-        inputValues.push(inputValue);
-      }
-    });
-
-    const sum = inputValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-
-    console.log('Sum:', sum);
-
-    document.getElementById('totalVotes').value = sum
-  }
-</script>
