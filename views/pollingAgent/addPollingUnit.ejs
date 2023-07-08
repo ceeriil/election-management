@@ -3,7 +3,7 @@
 >
 
 <h4>Add Result of Polling Unit</h4>
-<form method="POST" class="addPU" autocomplete="off">
+<form method="POST" class="addPU" autocomplete="off" enctype="multipart/form-data">
   <div class="mb-3">
     <label for="exampleInputEmail1" class="form-label">ID : </label>
     <input
@@ -62,6 +62,11 @@
         <% } %>
       </tbody>
     </table>
+  </div>
+
+  <div class="mb-3">
+    <label for="image" class="form-label">Vote Image:</label>
+    <input type="file" name="voteImage" id="image" class="form-control" accept="image/*" required>
   </div>
 
   <div class="mb-3">
