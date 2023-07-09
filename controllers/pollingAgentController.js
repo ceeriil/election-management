@@ -115,7 +115,7 @@ const pollingAgent_viewAll_get = async (req, res) => {
       parties: parties,
       selectedUnit: selectedUnit,
       partyVotes: partyVotes,
-      winners: winners, // Pass the winners object to the template
+      winners: winners,
     });
   } catch (error) {
     res.render("error", { error: "Error retrieving polling units" });
@@ -240,10 +240,10 @@ const pollingAgent_view_get = async (req, res) => {
 
     res.render("pollingAgent/pollingUnitDetails", {
       pollingUnit: pollingUnit,
-      winner: winner[0], // Pass the winner party name to the template
+      winner: winner[0],
     });
   } catch (error) {
-    // Handle any other errors
+    // Handle errors
     res.render("error", { error: "Error retrieving polling unit details" });
   }
 };
@@ -266,5 +266,5 @@ module.exports = {
   pollingAgent_option_get,
   pollingAgent_report_get,
   pollingAgent_view_get,
-  computePartyVotes, // Export the computePartyVotes function if needed externally
+  computePartyVotes,
 };

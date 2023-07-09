@@ -29,9 +29,25 @@ const pollingUnit_results_get = async (req, res) => {
   }
 };
 
+const pollingUnit_viewAll_get = async (req, res) => {
+  try {
+    const pollingUnits = await PollingUnit.find();
+
+    res.render("pollingUnit/viewAllUnits", { pollingUnits });
+  } catch (error) {
+    res.render("error", { error: "Error retrieving polling units" });
+  }
+};
+
+const pollingUnit_options_get = (req, res) => {
+  res.render("pollingUnit/option");
+};
+
 // Exporting the pollingUnit controller functions
 module.exports = {
   pollingUnit_login_get,
   pollingUnit_login_post,
   pollingUnit_results_get,
+  pollingUnit_options_get,
+  pollingUnit_viewAll_get,
 };
