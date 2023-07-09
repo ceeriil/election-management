@@ -13,6 +13,7 @@
     <p><strong>Name:</strong> <%= pollingUnit.name %></p>
     <p><strong>State:</strong> <%= pollingUnit.state %></p>
     <p><strong>Total Votes:</strong> <%= pollingUnit.totalVotes %></p>
+    <img src= <%= pollingUnit.voteImage %>  alt="">
     <p><strong>Party Details:</strong></p>
     <ul>
       <% for (const [party, votes] of Object.entries(pollingUnit.parties)) { %>

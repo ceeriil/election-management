@@ -24,6 +24,7 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Provide the extended option
+app.use(express.static("uploads"));
 
 //express layouts
 var expressLayouts = require("express-ejs-layouts");

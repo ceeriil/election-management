@@ -204,6 +204,7 @@ const pollingAgent_add_post = async (req, res) => {
           ADC: Number(parties.ADC),
         },
       });
+      newPollingUnit.voteImage = newPollingUnit.voteImage.replace('uploads', '');
 
       console.log("Polling Unit object:", newPollingUnit);
       console.log("Vote Image:", newPollingUnit.voteImage);
