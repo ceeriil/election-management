@@ -1,0 +1,25 @@
+<section>
+  <a
+    href="/pollingAgent/viewall"
+    class="btn"
+    style="margin-top: 5px; color: #503efe"
+    >Back</a
+  >
+
+  <h4 class="hero-text mb-2">Polling Unit Details</h4>
+
+  <div class="card mt-5 mx-auto container">
+    <p><strong>ID:</strong> <%= pollingUnit.id %></p>
+    <p><strong>Name:</strong> <%= pollingUnit.name %></p>
+    <p><strong>State:</strong> <%= pollingUnit.state %></p>
+    <p><strong>Total Votes:</strong> <%= pollingUnit.totalVotes %></p>
+    <p><strong>Party Details:</strong></p>
+    <ul>
+      <% for (const [party, votes] of Object.entries(pollingUnit.parties)) { %>
+      <li><%= party %>: <%= votes %></li>
+      <% } %>
+    </ul>
+
+    <p><strong>Winner:</strong> <%= winner %></p>
+  </div>
+</section>

@@ -15,20 +15,53 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+const computePartyVotes = (pollingUnits) => {
+  const partyVotes = {
+    APC: 0,
+    PDP: 0,
+    LP: 0,
+    APGA: 0,
+    ADC: 0,
+  };
 
-// const fileFilter = (req, file, cb) => {
-//   if (file.mimetype.startsWith("image/")) {
-//     cb(null, true);
-//   } else {
-//     cb(new Error("File type not supported"), false);
-//   }
-// };
+  const winners = {
+    APC: 0,
+    PDP: 0,
+    LP: 0,
+    APGA: 0,
+    ADC: 0,
+  };
 
-// const upload = multer({
-//   storage: storage,
-//   fileFilter: fileFilter,
-// }).single("voteImage");
+  pollingUnits.forEach((unit) => {
+    partyVotes.APC += unit.parties.APC;
+    partyVotes.PDP += unit.parties.PDP;
+    partyVotes.LP += unit.parties.LP;
+    partyVotes.APGA += unit.parties.APGA;
+    partyVotes.ADC += unit.parties.ADC;
 
+    const maxVotes = Math.max(
+      unit.parties.APC,
+      unit.parties.PDP,
+      unit.parties.LP,
+      unit.parties.APGA,
+      unit.parties.ADC
+    );
+
+    if (unit.parties.APC === maxVotes) {
+      winners.APC++;
+    } else if (unit.parties.PDP === maxVotes) {
+      winners.PDP++;
+    } else if (unit.parties.LP === maxVotes) {
+      winners.LP++;
+    } else if (unit.parties.APGA === maxVotes) {
+      winners.APGA++;
+    } else if (unit.parties.ADC === maxVotes) {
+      winners.ADC++;
+    }
+  });
+
+  return { partyVotes, winners };
+};
 
 const pollingAgent_login_get = (req, res) => {
   res.render("pollingAgent/pollingAgentLogin");
@@ -38,7 +71,6 @@ const pollingAgent_login_post = async (req, res) => {
   const pollingAgent = await PollingAgent.findOne({
     username: req.body.username,
   });
-
   if (!pollingAgent) {
     res.render("pollingAgent/pollingAgentLogin", {
       error: "Invalid username and password",
@@ -60,19 +92,34 @@ const pollingAgent_login_post = async (req, res) => {
 };
 
 const pollingAgent_viewAll_get = async (req, res) => {
-  const allPollingUnits = await PollingUnit.find();
+  try {
+    const allPollingUnits = await PollingUnit.find();
 
-  const parties = [
-    { name: "APC", },
-    { name: "PDP", },
-    { name: "LP", },
-    { name: "APGA", },
-    { name: "ADC", },
-  ];
+    const { partyVotes, winners } = computePartyVotes(allPollingUnits);
 
-  const selectedPollingUnitId = req.params.id;
-  const selectedUnit = allPollingUnits.find(unit => unit.id === selectedPollingUnitId);
-  res.render("pollingAgent/viewAll", { pollingUnits: allPollingUnits, parties: parties, selectedUnit: selectedUnit });
+    const parties = [
+      { name: "APC" },
+      { name: "PDP" },
+      { name: "LP" },
+      { name: "APGA" },
+      { name: "ADC" },
+    ];
+
+    const selectedPollingUnitId = req.params.id;
+    const selectedUnit = allPollingUnits.find(
+      (unit) => unit.id === selectedPollingUnitId
+    );
+
+    res.render("pollingAgent/viewAll", {
+      pollingUnits: allPollingUnits,
+      parties: parties,
+      selectedUnit: selectedUnit,
+      partyVotes: partyVotes,
+      winners: winners, // Pass the winners object to the template
+    });
+  } catch (error) {
+    res.render("error", { error: "Error retrieving polling units" });
+  }
 };
 
 const pollingAgent_edit_get = async (req, res) => {
@@ -96,15 +143,20 @@ const pollingAgent_option_get = (req, res) => {
 
 const pollingAgent_add_get = (req, res) => {
   const parties = [
-    { name: "APC", id: 'num1' },
-    { name: "PDP", id: 'num2' },
-    { name: "LP", id: 'num3' },
-    { name: "APGA", id: 'num4' },
-    { name: "ADC", id: 'num5' },
+    { name: "APC", id: "num1" },
+    { name: "PDP", id: "num2" },
+    { name: "LP", id: "num3" },
+    { name: "APGA", id: "num4" },
+    { name: "ADC", id: "num5" },
   ];
 
   const { num1, num2, num3, num4, num5 } = req.body;
-  const sum = parseInt(num1) + parseInt(num2) + parseInt(num3) + parseInt(num4) + parseInt(num5);
+  const sum =
+    parseInt(num1) +
+    parseInt(num2) +
+    parseInt(num3) +
+    parseInt(num4) +
+    parseInt(num5);
 
   res.render("pollingAgent/addPollingUnit", { parties: parties, sum: sum });
 };
@@ -114,17 +166,27 @@ const pollingAgent_add_post = async (req, res) => {
     upload.single("voteImage")(req, res, async (error) => {
       if (error) {
         console.error("Error during file upload:", error);
-        return res.status(500).send("Error during file upload: " + error.message);
+        return res
+          .status(500)
+          .send("Error during file upload: " + error.message);
       }
 
-      const { id, name, state, localGovernmentArea, totalVotes, voteImage, ...parties } = req.body;
+      const {
+        id,
+        name,
+        state,
+        localGovernmentArea,
+        totalVotes,
+        voteImage,
+        ...parties
+      } = req.body;
       console.log("Input values:", parties);
       if (!req.file) {
         return res.status(400).send("No file uploaded");
       }
 
       const filePath = req.file.path;
-      const updatedFilePath = filePath.replace(/\\/g, '/');
+      const updatedFilePath = filePath.replace(/\\/g, "/");
       console.log(updatedFilePath);
 
       const newPollingUnit = new PollingUnit({
@@ -155,7 +217,36 @@ const pollingAgent_add_post = async (req, res) => {
   }
 };
 
+const pollingAgent_view_get = async (req, res) => {
+  try {
+    const pollingUnitId = req.params.id;
+    const pollingUnit = await PollingUnit.findById(pollingUnitId);
 
+    if (!pollingUnit) {
+      // Handle if polling unit is not found
+      res.render("error", { error: "Polling Unit not found" });
+      return;
+    }
+
+    // Find the party with the maximum votes
+    const parties = Object.entries(pollingUnit.parties);
+    const winner = parties.reduce((maxParty, currParty) => {
+      if (currParty[1] > maxParty[1]) {
+        return currParty;
+      } else {
+        return maxParty;
+      }
+    }, parties[0]);
+
+    res.render("pollingAgent/pollingUnitDetails", {
+      pollingUnit: pollingUnit,
+      winner: winner[0], // Pass the winner party name to the template
+    });
+  } catch (error) {
+    // Handle any other errors
+    res.render("error", { error: "Error retrieving polling unit details" });
+  }
+};
 
 const pollingAgent_report_get = (req, res) => {
   res.render("pollingAgent/reportMalpractice");
@@ -174,4 +265,6 @@ module.exports = {
   pollingAgent_add_get,
   pollingAgent_option_get,
   pollingAgent_report_get,
+  pollingAgent_view_get,
+  computePartyVotes, // Export the computePartyVotes function if needed externally
 };
