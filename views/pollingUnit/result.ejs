@@ -4,6 +4,7 @@
   style="margin-top: 5px; color: #503efe"
   >back</a
 >
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <h2>Party Votes</h2>
 <ul>
@@ -18,3 +19,54 @@
   <li><%= party %>: <%= winners[party] %></li>
   <% } %>
 </ul>
+
+<canvas id="partyVotesChart"></canvas>
+
+<script>
+  const partyVotes = JSON.parse('<%= JSON.stringify(partyVotes) %>');
+
+// Get the chart canvas element
+const partyVotesCanvas = document.getElementById("partyVotesChart");
+
+// Prepare the data for the chart
+const partyNames = Object.keys(partyVotes);
+const partyVoteCounts = Object.values(partyVotes);
+
+// Create the chart
+new Chart(partyVotesCanvas, {
+  type: "bar",
+  data: {
+    labels: partyNames,
+    datasets: [{
+      label: "Party Votes",
+      data: partyVoteCounts,
+      backgroundColor: [
+        "rgba(255, 99, 132, 0.5)", // APC
+        "rgba(54, 162, 235, 0.5)", // PDP
+        "rgba(255, 206, 86, 0.5)", // LP
+        "rgba(75, 192, 192, 0.5)", // APGA
+        "rgba(153, 102, 255, 0.5)" // ADC
+      ],
+      borderWidth: 1,
+      borderColor: [
+        "rgba(255, 99, 132, 1)", // APC
+        "rgba(54, 162, 235, 1)", // PDP
+        "rgba(255, 206, 86, 1)", // LP
+        "rgba(75, 192, 192, 1)", // APGA
+        "rgba(153, 102, 255, 1)" // ADC
+      ]
+    }]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          precision: 0
+        }
+      }
+    }
+  }
+});
+</script>

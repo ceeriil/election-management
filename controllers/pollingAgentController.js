@@ -150,6 +150,45 @@ const pollingAgent_add_get = (req, res) => {
     { name: "ADC", id: "num5" },
   ];
 
+  const states = [
+    { name: "Abia" },
+    { name: "Adamawa" },
+    { name: "Akwa Ibom" },
+    { name: "Anambra" },
+    { name: "Bauchi" },
+    { name: "Bayelsa" },
+    { name: "Benue" },
+    { name: "Borno" },
+    { name: "Cross River" },
+    { name: "Delta" },
+    { name: "Ebonyi" },
+    { name: "Edo" },
+    { name: "Ekiti" },
+    { name: "Enugu" },
+    { name: "Gombe" },
+    { name: "Imo" },
+    { name: "Jigawa" },
+    { name: "Kaduna" },
+    { name: "Kano" },
+    { name: "Katsina" },
+    { name: "Kebbi" },
+    { name: "Kogi" },
+    { name: "Kwara" },
+    { name: "Lagos" },
+    { name: "Nasarawa" },
+    { name: "Niger" },
+    { name: "Ogun" },
+    { name: "Ondo" },
+    { name: "Osun" },
+    { name: "Oyo" },
+    { name: "Plateau" },
+    { name: "Rivers" },
+    { name: "Sokoto" },
+    { name: "Taraba" },
+    { name: "Yobe" },
+    { name: "Zamfara" }
+  ];
+
   const { num1, num2, num3, num4, num5 } = req.body;
   const sum =
     parseInt(num1) +
@@ -158,7 +197,7 @@ const pollingAgent_add_get = (req, res) => {
     parseInt(num4) +
     parseInt(num5);
 
-  res.render("pollingAgent/addPollingUnit", { parties: parties, sum: sum });
+  res.render("pollingAgent/addPollingUnit", { parties: parties, sum: sum, states: states });
 };
 
 const pollingAgent_add_post = async (req, res) => {
