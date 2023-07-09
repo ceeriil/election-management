@@ -1,3 +1,26 @@
+<style>
+  .state {
+    display: flex;
+    align-items: center;
+
+  }
+  .form-select {
+    margin-left: 1rem;
+    width: 60%;
+    outline: none;
+    position: relative;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  .form-select:active {
+    outline: none;
+  }
+</style>
+
 <a
   href="/pollingAgent/option"
   class="btn ml-4"
@@ -32,16 +55,15 @@
       id="exampleInputEmail1"
     />
   </div>
-  <div class="mb-3">
-    <label for="exampleInputEmail1" class="form-label">State:</label>
-    <input
-      type="text"
-      name="state"
-      required
-      class="form-control"
-      id="exampleInputEmail1"
-    />
-  </div>
+  <div class="mb-3 state">
+    <label for="stateSelect" class="form-label">State:</label>
+    <select name="state" required class="form-select" id="stateSelect">
+      <option value="" selected disabled>Select a state</option>
+      <% for (const state of states) { %>
+        <option value=" <%= state.name %> "> <%= state.name %> </option>
+      <% } %>
+    </select>
+  </div>  
 
   <div>
     <table class="table">
