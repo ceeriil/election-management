@@ -35,6 +35,11 @@ const pollingUnitSchema = new Schema({
       default: 0,
     },
   },
+  isMalpractice: {
+    type: Boolean,
+    default: false,
+  },
+  typeofMalpractice: Object
 });
 
 // Exporting the model

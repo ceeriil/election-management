@@ -53,9 +53,7 @@
 
   <form method="POST" class="addPU report" autocomplete="off">
     <div class="input">
-      <label for="exampleInputEmail1" class="text-bold text-uppercase"
-        >Polling Unit ID :
-      </label>
+      <label for="exampleInputEmail1" class="text-bold text-uppercase">Polling Unit ID:</label>
       <input
         type="string"
         name="id"
@@ -71,69 +69,35 @@
     </h3>
 
     <div class="mb-3">
-      <label for="exampleInputEmail1" class="form-label"
-        >Delayed Voting (INEC late arrival)</label
-      >
-      <input type="checkbox" name="id" class="check" id="exampleInputEmail1" />
+      <label for="delayedVotes" class="form-label">Delayed Voting (INEC late arrival)</label>
+      <input type="checkbox" name="malpractices.DelayedVote" value="DelayedVote" class="check" id="delayedVotes" />
     </div>
     <div class="mb-3">
-      <label for="exampleInputEmail1" class="form-label"
-        >Underage Voting
-      </label>
-      <input
-        type="checkbox"
-        name="name"
-        class="check"
-        id="exampleInputEmail1"
-      />
+      <label for="underageVoting" class="form-label">Underage Voting</label>
+      <input type="checkbox" name="malpractices.underageVoting" value="underageVoting" class="check" id="underageVoting" />
     </div>
 
     <div class="mb-3">
-      <label for="exampleInputEmail1" class="form-label">Over Voting</label>
-      <input
-        type="checkbox"
-        name="state"
-        class="check"
-        id="exampleInputEmail1"
-      />
+      <label for="overVoting" class="form-label">Over Voting</label>
+      <input type="checkbox" name="malpractices.overVoting" value="overVoting" class="check" id="overVoting" />
     </div>
 
     <div class="mb-3">
-      <label for="exampleInputEmail1" class="form-label"
-        >Destruction of election materials</label
-      >
-      <input
-        type="checkbox"
-        name="state"
-        class="check"
-        id="exampleInputEmail1"
-      />
+      <label for="destruction" class="form-label">Destruction of election materials</label>
+      <input type="checkbox" name="malpractices.destruction" value="destruction" class="check" id="destruction" />
     </div>
 
     <div class="mb-3">
-      <label for="exampleInputEmail1" class="form-label"
-        >Voter intimidation</label
-      >
-      <input
-        type="checkbox"
-        name="state"
-        class="check"
-        id="exampleInputEmail1"
-      />
+      <label for="intimidation" class="form-label">Voter intimidation</label>
+      <input type="checkbox" name="malpractices.intimidation" value="intimidation" class="check" id="intimidation" />
     </div>
 
     <div class="mb-3">
-      <label for="exampleInputEmail1" class="form-label"
-        >Voter disenfranchisement</label
-      >
-      <input
-        type="checkbox"
-        name="state"
-        class="check"
-        id="exampleInputEmail1"
-      />
+      <label for="disenfranchisement" class="form-label">Voter disenfranchisement</label>
+      <input type="checkbox" name="malpractices.disenfranchisement" value="disenfranchisement" class="check" id="disenfranchisement" />
     </div>
 
     <button type="submit" class="btn">Report</button>
   </form>
 </section>
+

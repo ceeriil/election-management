@@ -17,4 +17,12 @@ router.get(
   "/reportmalpractice",
   pollingAgentController.pollingAgent_report_get
 );
+router.get(
+  "/malpractices",
+  pollingAgentController.pollingAgent_getmalpractices
+);
+router.post(
+  "/reportmalpractice",
+  pollingAgentController.pollingAgent_addmalpractice_post
+);
 module.exports = router;

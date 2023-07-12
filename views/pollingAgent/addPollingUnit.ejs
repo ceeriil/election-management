@@ -36,7 +36,7 @@
   enctype="multipart/form-data"
 >
   <div class="mb-3">
-    <label for="exampleInputEmail1" class="form-label">ID:</label>
+    <label for="exampleInputEmail1" class="form-label">Polling Unit ID:</label>
     <input
       type="string"
       name="id"
@@ -46,7 +46,7 @@
     />
   </div>
   <div class="mb-3">
-    <label for="exampleInputEmail1" class="form-label">Name:</label>
+    <label for="exampleInputEmail1" class="form-label">Pollling Unit Name:</label>
     <input
       type="text"
       name="name"
@@ -64,6 +64,19 @@
       <% } %>
     </select>
   </div>  
+
+
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Local Government Area:</label>
+    <input
+      type="string"
+      name="localGovernmentArea"
+      required
+      class="form-control"
+      id="exampleInputEmail1"
+    />
+  </div>
+
 
   <div>
     <table class="table">
@@ -114,6 +127,10 @@
       id="totalVotes"
       readonly
     />
+  </div>
+
+  <div class="mb-5">
+    <input type="checkbox" name=" isMalpractice" id="isMalpractice">
   </div>
   <button type="submit" class="btn btn-primary btn-width">Add</button>
   <a href="/pollingAgent/viewall" class="btn btn-secondary btn-width">View All</a>

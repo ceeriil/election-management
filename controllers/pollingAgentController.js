@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const PollingAgent = require("../models/pollingAgent");
 const PollingUnit = require("../models/pollingUnit");
+const Malpractice = require("../models/malpractice");
 const multer = require("multer");
 
 // Set up multer storage configuration
@@ -217,6 +218,8 @@ const pollingAgent_add_post = async (req, res) => {
         localGovernmentArea,
         totalVotes,
         voteImage,
+        isMalpractice,
+        typeOfMalpractice,
         ...parties
       } = req.body;
       console.log("Input values:", parties);
@@ -234,6 +237,8 @@ const pollingAgent_add_post = async (req, res) => {
         state: state,
         totalVotes: totalVotes,
         localGovernmentArea: localGovernmentArea,
+        isMalpractice: isMalpractice,
+        typeofMalpractice: typeOfMalpractice,
         voteImage: updatedFilePath, // Store the file path in the voteImage field
         parties: {
           APC: Number(parties.APC),
@@ -249,13 +254,40 @@ const pollingAgent_add_post = async (req, res) => {
       console.log("Vote Image:", newPollingUnit.voteImage);
 
       await newPollingUnit.save();
-      res.redirect("/pollingAgent/add");
+      res.redirect("/pollingAgent/viewall");
     });
   } catch (error) {
     console.error("Error during file upload:", error);
     res.status(500).send("Error during file upload: " + error.message);
   }
 };
+
+const pollingAgent_addmalpractice_post = async (req, res) => {
+  const { id, ...malpractices } = req.body;
+  console.log("Input values:", id, malpractices);
+
+  const newMalpractice = new Malpractice({
+    id: id,
+    malpractices: Object.keys(malpractices),
+  });
+
+  await newMalpractice.save();
+  res.redirect("malpractices");
+};
+
+const pollingAgent_getmalpractices = async (req, res) => {
+  try {
+    const malpractices = await Malpractice.find();
+    console.log(malpractices);
+    res.render("malpracticeList", { malpractices });
+  } catch (error) {
+    console.error("Error fetching malpractices:", error);
+    res.status(500).json({ error: "Failed to fetch malpractices" });
+  }
+};
+
+
+
 
 const pollingAgent_view_get = async (req, res) => {
   try {
@@ -290,6 +322,7 @@ const pollingAgent_view_get = async (req, res) => {
 
 const pollingAgent_report_get = (req, res) => {
   res.render("pollingAgent/reportMalpractice");
+ 
 };
 
 // Exporting Polling Agent controller functions
@@ -306,5 +339,7 @@ module.exports = {
   pollingAgent_option_get,
   pollingAgent_report_get,
   pollingAgent_view_get,
+  pollingAgent_addmalpractice_post,
   computePartyVotes,
+  pollingAgent_getmalpractices
 };

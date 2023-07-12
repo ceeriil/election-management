@@ -1,20 +1,49 @@
-<a href="/pollingUnit/option" class="btn ml-4" style="margin-top: 5px; color: #503efe">back</a>
+<a href="/pollingAgent/option" class="btn ml-4" style="margin-top: 5px; color: #503efe">back</a>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<h2>Party Votes</h2>
-<ul>
-  <% for (const party in partyVotes) { %>
-  <li><%= party %>: <%= partyVotes[party] %></li>
-  <% } %>
-</ul>
+ <h5 class="hero-text text-center">Live Results</h5>
+<div class="tableDiv">
+  <h2 class="mb-2">Total Votes Accumulated </h2>
+  <table class="table table-striped mb-5">
+    <thead>
+      <tr>
+        <th>Party</th>
+        <th>Votes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for (const party in partyVotes) { %>
+      <tr>
+        <td><%= party %></td>
+        <td><%= partyVotes[party] %></td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+  
+  
+  
+  <h2 class="mt-4">Total Polling Unit Won</h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Party</th>
+        <th>No. of Polling Unit Won</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for (const party in winners) { %>
+      <tr>
+        <td><%= party %></td>
+        <td><%= winners[party] %></td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
 
-<h2>Winners</h2>
-<ul>
-  <% for (const party in winners) { %>
-  <li><%= party %>: <%= winners[party] %></li>
-  <% } %>
-</ul>
+
 
 <canvas id="partyVotesChart"></canvas>
 
