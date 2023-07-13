@@ -6,6 +6,7 @@ body {
   background: #060616;
   color: #818486;
   line-height: 1.5;
+  height: 100%;
 }
 
 .background {
@@ -14,6 +15,9 @@ body {
   top: 0;
   left: 0;
   z-index: -1;
+  bottom: 0;
+  height: 100%;
+
 }
 
 a {
@@ -363,5 +367,29 @@ form-control:disabled,
   width: 90%;
   margin: 0 auto;
   border: 1px solid #ffffff50;
+}
+
+.flagged ul{
+  list-style-type: none;
+  text-align: left;
+}
+
+.flagged h6{
+  text-transform: uppercase;
+  text-align: left;
+  padding-left: 2.3rem;
+  font-weight: bold;
+}
+
+.flagged.table tr:first-of-type td{
+  border-top: 1px solid #1449ff;
+}
+
+.flagged td:first-of-type{
+ border-right: 1px solid #ffffff50;
+}
+
+.flagged li{
+  margin-bottom: 0.4rem;
 }
 

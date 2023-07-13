@@ -51,7 +51,7 @@
 
   <h4 class="hero-text">Report Election Malpractice</h4>
 
-  <form method="POST" class="addPU report" autocomplete="off">
+  <form method="POST" class="addPU report" autocomplete="off" enctype="multipart/form-data">
     <div class="input">
       <label for="exampleInputEmail1" class="text-bold text-uppercase">Polling Unit ID:</label>
       <input
@@ -95,6 +95,17 @@
     <div class="mb-3">
       <label for="disenfranchisement" class="form-label">Voter disenfranchisement</label>
       <input type="checkbox" name="malpractices.disenfranchisement" value="disenfranchisement" class="check" id="disenfranchisement" />
+    </div>
+
+    <div class="mb-3">
+      <label for="image" class="form-label">Upload Malpractice Evidence:</label>
+      <input
+        type="file"
+        name="videoEvidence"
+        id="image"
+        class="form-control"
+        required
+      />
     </div>
 
     <button type="submit" class="btn">Report</button>

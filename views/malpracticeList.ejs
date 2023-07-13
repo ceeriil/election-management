@@ -1,48 +1,49 @@
 <!-- malpracticeList.ejs -->
-<a
-  href="/pollingAgent/option"
-  class="btn ml-4"
-  style="margin-top: 5px; color: #503efe"
-  >Back</a
->
+<a href="/pollingAgent/option" class="btn ml-4" style="margin-top: 5px; color: #503efe">Back</a>
 
-<h5 class="hero-text text-center">Malpractice List</h5>
+<h5 class="hero-text text-center">Flagged Polling Units</h5>
 
 <div class="tableDiv">
-    <table class="table table-striped">
-        <% malpractices.forEach(malpractice => { %>
-          <tr>
-            <td>
-              <h5>Polling Unit ID: <%= malpractice.id %></h5>
-            </td>
-            <td>
-              <% if (malpractice.malpractices.length > 0) { %>
-                <h6>Malpractices:</h6>
-                <ul>
-                  <% malpractice.malpractices.forEach(malpracticeType => { %>
-                    <li>
-                      <% if (malpracticeType === 'malpractices.underageVoting') { %>
-                        Underage Voting
-                      <% } else if (malpracticeType === 'malpractices.overVoting') { %>
-                        Over Voting
-                      <% } else if (malpracticeType === 'malpractices.disenfranchisement') { %>
-                        Voter Disenfranchisement
-                      <% } else if (malpracticeType === 'malpractices.DelayedVote') { %>
-                        Delayed Voting (INEC late arrival)
-                      <% } else if (malpracticeType === 'malpractices.destruction') { %>
-                        Destruction of Election Materials
-                      <% } else if (malpracticeType === 'malpractices.intimidation') { %>
-                        Voter Intimidation
-                      <% } %>
-                    </li>
-                  <% }) %>
-                </ul>
-              <% } else { %>
-                <p>No malpractices reported for this polling unit.</p>
+  <table class="table table-striped flagged">
+    <% malpractices.forEach(malpractice => { %>
+      <tr>
+        <td>
+          <h5>Polling Unit ID: <%= malpractice.id %></h5>
+        </td>
+        <td>
+          <% if (malpractice.malpractices.length > 0) { %>
+            <h6>Malpractices:</h6>
+            <ul>
+              <% malpractice.malpractices.forEach(malpracticeType => { %>
+                <li>
+                  <% if (malpracticeType === 'malpractices.underageVoting') { %>
+                    Underage Voting
+                  <% } else if (malpracticeType === 'malpractices.overVoting') { %>
+                    Over Voting
+                  <% } else if (malpracticeType === 'malpractices.disenfranchisement') { %>
+                    Voter Disenfranchisement
+                  <% } else if (malpracticeType === 'malpractices.DelayedVote') { %>
+                    Delayed Voting (INEC late arrival)
+                  <% } else if (malpracticeType === 'malpractices.destruction') { %>
+                    Destruction of Election Materials
+                  <% } else if (malpracticeType === 'malpractices.intimidation') { %>
+                    Voter Intimidation
+                  <% } %>
+                </li>
+              <% }) %>
+              <% if (malpractice.videoEvidence) { %>
+                <li>
+                  <a href="<%= malpractice.videoEvidence %>" target="_blank" class="btn btn-primary">
+                    View Evidence
+                  </a>
+                </li>
               <% } %>
-            </td>
-          </tr>
-        <% }) %>
-      </table>
-      
+            </ul>
+          <% } else { %>
+            <p>No malpractices reported for this polling unit.</p>
+          <% } %>
+        </td>
+      </tr>
+    <% }) %>
+  </table>
 </div>

@@ -263,17 +263,45 @@ const pollingAgent_add_post = async (req, res) => {
 };
 
 const pollingAgent_addmalpractice_post = async (req, res) => {
-  const { id, ...malpractices } = req.body;
-  console.log("Input values:", id, malpractices);
+  try {
+    upload.single("videoEvidence")(req, res, async (error) => {
+      if (error) {
+        console.error("Error during file upload:", error);
+        return res
+          .status(500)
+          .send("Error during file upload: " + error.message);
+      }
 
-  const newMalpractice = new Malpractice({
-    id: id,
-    malpractices: Object.keys(malpractices),
-  });
+      const { id, ...malpractices } = req.body;
+      console.log("Input values:", id, malpractices);
+      
+      if (!req.file) {
+        return res.status(400).send("No file uploaded");
+      }
 
-  await newMalpractice.save();
-  res.redirect("malpractices");
+      const filePath = req.file.path;
+      const updatedFilePath = filePath.replace(/\\/g, "/");
+      console.log(updatedFilePath);
+
+      const newMalpractice = new Malpractice({
+        id: id,
+        malpractices: Object.keys(malpractices),
+        videoEvidence: updatedFilePath, // Store the file path in the videoEvidence field
+      });
+      newMalpractice.videoEvidence = newMalpractice.videoEvidence.replace('uploads', '');
+
+      console.log("Malpractice object:", newMalpractice);
+      console.log("Video Evidence:", newMalpractice.videoEvidence);
+
+      await newMalpractice.save();
+      res.redirect("malpractices");
+    });
+  } catch (error) {
+    console.error("Error during file upload:", error);
+    res.status(500).send("Error during file upload: " + error.message);
+  }
 };
+
 
 const pollingAgent_getmalpractices = async (req, res) => {
   try {

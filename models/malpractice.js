@@ -11,6 +11,7 @@ const MalpracticeSchema = new Schema({
   name: String,
   state: String,
   localGovernmentArea: String,
+  videoEvidence: String,
   malpractices: [String],
 });
 
